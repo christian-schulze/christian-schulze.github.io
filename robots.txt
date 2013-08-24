@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: http://christian-schulze.github.io/sitemap.xml 
