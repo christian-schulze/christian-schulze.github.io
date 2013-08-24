@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: TDD | My Coding Blog]]></title>
+  <link href="http://christian-schulze.github.io/blog/categories/tdd/atom.xml" rel="self"/>
+  <link href="http://christian-schulze.github.io/"/>
+  <updated>2013-08-25T00:36:09+10:00</updated>
+  <id>http://christian-schulze.github.io/</id>
+  <author>
+    <name><![CDATA[Christian Schulze]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Stop selenium loading firefox in the foreground]]></title>
+    <link href="http://christian-schulze.github.io/blog/2013/08/24/stop-selenium-loading-firefox-in-the-foreground/"/>
+    <updated>2013-08-24T15:57:00+10:00</updated>
+    <id>http://christian-schulze.github.io/blog/2013/08/24/stop-selenium-loading-firefox-in-the-foreground</id>
+    <content type="html"><![CDATA[<p>In my day job, an important part of our testing suite involves driving Firefox via RSpec feature specs.
+Which is realised through the use of the <a href="https://rubygems.org/gems/capybara">Capybara</a> and <a href="https://rubygems.org/gems/selenium-webdriver">Selenium Webdriver</a> gems.</p>
+
+<p>As all testing suites grow, we eventually introduced the awesome <a href="https://rubygems.org/gems/parallel_tests">Parallel Tests</a> gem, cutting run-times dramatically.
+An unfortunate side effect however, multiple instances of Firefox randomly opening in the foreground and stealing focus.</p>
+
+<p>Some digging into the selenium-webdriver codebase found the culprit in the <strong>Selenium::WebDriver::FireFox::Launcher</strong> class:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[selenium-webdriver]/lib/selenium/webdriver/firefox/launcher.rb:64 </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">start</span>
+</span><span class='line'>  <span class="n">assert_profile</span>
+</span><span class='line'>  <span class="vi">@binary</span><span class="o">.</span><span class="n">start_with</span> <span class="vi">@profile</span><span class="p">,</span> <span class="vi">@profile_dir</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="o">-</span><span class="n">foreground</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Removing the <strong>-foreground</strong> parameter has the desired effect of loading Firefox behind the terminal, and not stealing focus.
+But since the selenium-webdriver codebase is hosted in google code a pull request was out of the question, time for some monkey patching.</p>
+
+<p>The following code goes at the base of spec_helper:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[your-project]/spec/spec_helper.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="no">ENV</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="no">SELENIUM_WEBDRIVER_FIREFOX_NO_FOREGROUND</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;,</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;)</span><span class="o">.</span><span class="n">downcase</span> <span class="o">==</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="kp">true</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">Selenium::WebDriver::Firefox</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;class Launcher</span>
+</span><span class='line'><span class="sr">  def start</span>
+</span><span class='line'><span class="sr">    assert_profile</span>
+</span><span class='line'><span class="sr">    @binary.start_with @profile, @profile_dir, &#39;&#39;</span>
+</span><span class='line'><span class="sr">  end</span>
+</span><span class='line'><span class="sr">end</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  end</span>
+</span><span class='line'><span class="sr">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>The patch is disabled by default, to opt-in set the environment variable as part of your testing command:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">SELENIUM_WEBDRIVER_FIREFOX_NO_FOREGROUND</span><span class="o">=</span><span class="nb">true </span>rake parallel:spec
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Happy testing folks!</p>
+]]></content>
+  </entry>
+  
+</feed>
