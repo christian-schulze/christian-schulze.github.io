@@ -18,6 +18,8 @@ Which is realised through the use of the [Capybara](https://rubygems.org/gems/ca
 As all testing suites grow, we eventually introduced the awesome [Parallel Tests](https://rubygems.org/gems/parallel_tests) gem, cutting run-times dramatically.
 An unfortunate side effect however, multiple instances of Firefox randomly opening in the foreground and stealing focus.
 
+<!-- more -->
+
 Some digging into the selenium-webdriver codebase found the culprit in the **Selenium::WebDriver::FireFox::Launcher** class:
 
 {% codeblock [selenium-webdriver]/lib/selenium/webdriver/firefox/launcher.rb:64 lang:ruby %}
