@@ -1,3 +1,15 @@
-<section>
-A little something about me.
+<section id="about">
+  <h1>
+    About Me
+    {% if site.about_email %}
+    <a href="mailto:{{ site.about_email }}"><i class="icon-envelope-alt" title="Email"></i></a>
+    {% endif %}
+    {% if site.about_linkedin %}
+    <a href="https://www.linkedin.com/in/{{ site.about_linkedin }}" target="_blank"><i class="icon-linkedin" title="LinkedIn"></i></a>
+    {% endif %}
+    {% if site.about_github %}
+    <a href="https://github.com/{{ site.about_github }}" target="_blank"><i class="icon-github" title="GitHub"></i></a>
+    {% endif %}
+  </h1>
+  <p>Ruby on Rails and Backbone.JS specialist. I like coding, coffee, cats and gadgets. Based in Melbourne Australia.<p>
 </section>
