@@ -102,6 +102,9 @@ Which is realised through the use of the <a href="https://rubygems.org/gems/capy
 <p>As all testing suites grow, we eventually introduced the awesome <a href="https://rubygems.org/gems/parallel_tests">Parallel Tests</a> gem, cutting run-times dramatically.
 An unfortunate side effect however, multiple instances of Firefox randomly opening in the foreground and stealing focus.</p>
 
+<!-- more -->
+
+
 <p>Some digging into the selenium-webdriver codebase found the culprit in the <strong>Selenium::WebDriver::FireFox::Launcher</strong> class:</p>
 
 <figure class='code'><figcaption><span>[selenium-webdriver]/lib/selenium/webdriver/firefox/launcher.rb:64 </span></figcaption>
