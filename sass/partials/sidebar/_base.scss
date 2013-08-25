@@ -60,7 +60,7 @@ aside.sidebar {
   }
   &:hover a {
     color: $sidebar-link-color;
-    &:hover { color: $sidebar-link-color-hover; }
+    &:hover { color: darken($sidebar-link-color-hover, 20); }
   }
 }
 .aside-alt-link {
