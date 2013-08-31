@@ -13,8 +13,13 @@ article {
     background: $img-border bottom left repeat-x;
     h1 {
       margin: 0;
-      a { text-decoration: none;
-        &:hover { text-decoration: underline; } }
+      a {
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+          color: $link-color;
+        }
+      }
     }
     p {
       font-size: .9em;
@@ -125,7 +130,13 @@ article + article {
   article header { background: none; padding-bottom: 0; }
   article h1 {
     font-size: 1.8em;
-    a { color: #555555; &:hover { text-decoration:none } }
+    a {
+      color: #555555;
+      &:hover {
+        text-decoration: none;
+        color: $link-color;
+      }
+    }
   }
   a[rel=full-article] {
     background: darken($main-bg, 5);
