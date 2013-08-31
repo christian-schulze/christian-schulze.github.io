@@ -25,11 +25,16 @@ Aug 24 2013 posted in BDD, Capybara, RSpec, Selenium webdriver, TDD About Me Rub
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <script src="/javascripts/libs/jquery.min.js"></script>
   <link href="/atom.xml" rel="alternate" title="My Coding Blog" type="application/atom+xml">
   <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<script lang="javascript">
+  $.noConflict()
+</script>
 
   
 
@@ -147,6 +152,7 @@ Aug 24 2013 posted in BDD, Capybara, RSpec, Selenium webdriver, TDD About Me Rub
             user: 'christian-schulze',
             count: 2,
             skip_forks: true,
+            skip_repos: [ "christian-schulze.github.io", "darkstripes" ],
             target: '#gh_repos'
         });
     });
